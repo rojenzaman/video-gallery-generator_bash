@@ -18,5 +18,9 @@ Go to your videos directory and type this commands:
 - Subtitle file names are must be same name with their videos file.
 - Videos must have a title and artist metadata in order to be displayed as a title on the html page, if not they called by file names.
 
+### Screenshots
+
+<img src="https://raw.githubusercontent.com/rojenzaman/rojenzaman.github.io/main/uploads/ss-1.jpeg" width="100%" alt="ss-1">
+<img src="https://raw.githubusercontent.com/rojenzaman/rojenzaman.github.io/main/uploads/ss-2.jpeg" width="100%" alt="ss-2">
 
 > **GNU General Public License v3.0** , 2020
