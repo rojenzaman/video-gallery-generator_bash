@@ -1,7 +1,6 @@
 ## Static Video Gallery Generator (BASH builtin) ![repo size](https://img.shields.io/github/size/rojenzaman/video-gallery-generator_bash/video-gallery-generator.sh) ![license](https://img.shields.io/github/license/rojenzaman/video-gallery-generator_bash) ![lang](https://img.shields.io/github/languages/top/rojenzaman/video-gallery-generator_bash)
 
-Demo web site available on https://geocities.ws/rojen/video-gallery-demo/
-
+Demo web site available on https://rojenzaman.github.io/video-gallery/
 ### Install
 
     git clone https://github.com/rojenzaman/video-gallery-generator_bash.git
