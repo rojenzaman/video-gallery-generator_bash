@@ -1,7 +1,11 @@
 #!/bin/bash
 #videos are public domain
 
-wget "https://geocities.ws/rojen/video-gallery-demo/480p%20video%20test-jdILkv4u4MI.mp4"
-wget "https://geocities.ws/rojen/video-gallery-demo/Big_Buck_Bunny_360_10s_1MB.mp4"
-wget "https://geocities.ws/rojen/video-gallery-demo/Jellyfish_360_10s_1MB.mp4"
-wget "https://geocities.ws/rojen/video-gallery-demo/mov_bbb.mp4"
+wget "https://rojenzaman.github.io/video-gallery/file_example_MP4_480_1_5MG.mp4"
+wget "https://rojenzaman.github.io/video-gallery/file_example_MP4_480_1_5MG.vtt"
+wget "https://rojenzaman.github.io/video-gallery/grb_2.mp4"
+wget "https://rojenzaman.github.io/video-gallery/index.html"
+wget "https://rojenzaman.github.io/video-gallery/mov_bbb.mp4"
+wget "https://rojenzaman.github.io/video-gallery/mov_bbb.vtt"
+wget "https://rojenzaman.github.io/video-gallery/sample_640x360.mp4"
+wget "https://rojenzaman.github.io/video-gallery/small.mp4"
