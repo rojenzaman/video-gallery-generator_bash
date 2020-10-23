@@ -19,6 +19,5 @@ Go to your videos directory and type this commands:
 - Subtitle file names are must be same name with their videos file.
 - Videos must have a title and artist metadata in order to be displayed as a title on the html page, if not they called by file names.
 
-<br><br>
 
 > **GNU General Public License v3.0** , 2020
