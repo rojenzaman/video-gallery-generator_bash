@@ -11,7 +11,6 @@ Go to your videos directory and type this commands:
 
     ./video-gallery-generator -t "Title" [-d "out-dirname"]
     
-    
 ### RULES
 - The videos are must be MP4
 - The subtitle files are must be VTT
@@ -22,5 +21,11 @@ Go to your videos directory and type this commands:
 
 <img src="https://raw.githubusercontent.com/rojenzaman/rojenzaman.github.io/main/uploads/ss-1.jpeg" width="100%" alt="ss-1">
 <img src="https://raw.githubusercontent.com/rojenzaman/rojenzaman.github.io/main/uploads/ss-2.jpeg" width="100%" alt="ss-2">
+
+<br>
+
+powered by [GNU Bash](https://www.gnu.org/software/bash/), [Plyr](https://plyr.io/), [FFmpeg](https://ffmpeg.org/), [exiftool](https://exiftool.org/) and [ImageMagick](https://imagemagick.org/index.php)
+
+<br>
 
 > **GNU General Public License v3.0** , 2020
