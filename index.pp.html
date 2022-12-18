@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang='tr'>
+<head>
+	<meta charset='utf-8'>
+	<title>$title</title>
+	<meta name='viewport' content='width=device-width'>
+	<meta name='robots' content='noindex, nofollow'>
+	<meta name='generator' content='$0' />
+	<link rel='stylesheet' href='$stylesheet'>
+        <style>
+            body {
+            color: white;
+            background-color: black;
+            }
+        </style>
+</head>
+<body>
+<div class='container'>
+	<div class='row'>
+		<div class='col-xs-12'>
+			<div class='page-header'><h1>$title</h1></div>
+		</div>
+	</div>
+
+#!
+if [[ $(find . -maxdepth 1 -type f -iname \*.mp4 | wc -l) -gt 0 ]]; then
+#!
+
+<div class='row'>
+
+#!
+    numfiles=0
+    for filename in *.[mM][pP][4]; do
+        filelist[$numfiles]=$filename
+        (( numfiles++ ))
+        if [[ ! -s $thumbdir/$filename ]]; then
+            debugOutput "$thumbdir/$filename"
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$filename")
+            ffmpeg -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
+        fi
+        get_title=$(exiftool -b -Title "$filename")
+        if [[ -z "$get_title" ]]; then
+            video_title="$filename"
+        else
+            video_title="$get_title"
+        fi
+#!
+
+<div class='col-md-3 col-sm-12'>
+	<p>
+		$video_title
+		<a href='$thumbdir/$filename.html'><img src='$thumbdir/$filename.jpg' alt='' class='img-responsive'></a>
+		<div class='hidden-md hidden-lg'><hr></div>
+	</p>
+</div>
+
+#!
+        if [[ $((numfiles % 4)) -eq 0 ]]; then
+#!
+
+<div class='clearfix visible-md visible-lg'></div>
+
+#!
+        fi
+    done
+#!
+
+</div>
+
+#!
+fi
+
+
+if [[ $(find . -maxdepth 1 -type f -iname \*.vtt | wc -l) -gt 0 ]]; then
+#!
+
+    <div class='row'>
+		<div class='col-xs-12'>
+			<div class='page-header'><h3>VTT Files</h3></div>
+		</div>
+	</div>
+	<div class='row'>
+	<div class='col-xs-12'>
+#!
+	for filename in *.[vV][tT][tT]; do
+#!
+		<a href='$filename' class='btn btn-primary' role='button'>$downloadicon $filename</a>
+#!
+	done
+#!
+    </div>
+</div>
+#!
+fi
+#!
+<hr>
+<footer>
+	<p>$footer</p>
+	<p class='text-muted'>$datetime</p>
+</footer>
+</div> 
+</body>
+</html>

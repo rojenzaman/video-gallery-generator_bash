@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html lang='tr'>
+<head>
+<meta charset='utf-8'>
+<title>$video_title $video_artist</title>
+<meta name='viewport' content='width=device-width'>
+<meta name='robots' content='noindex, nofollow'>
+<meta name='generator' content='$0' />
+<link rel='stylesheet' href='$stylesheet'>
+<link rel='stylesheet' href='$plyr_css' />
+        <style>
+            body {
+            color: white;
+            background-color: black;
+            }
+			.pager li > a, .pager li > span {
+			display: inline-block;
+			padding: 5px 14px;
+			background-color: #000;
+			border: 2px solid #09ffff;
+			border-radius: 15px;
+			}
+			a {
+			color: #09ffff;
+			text-decoration: none;
+			}
+			.btn-info {
+			color: #000;
+			background-color: #5bc0de;
+			border-color: #46b8da;
+			}
+        </style>
+</head>
+<body>
+<div class='container'>
+<div class='row'>
+	<div class='col-xs-12'>
+		<div class='page-header'><h2><a href='../$htmlfile'>$homeicon</a> <span class='text-muted'>/</span> $video_title $video_artist</h2></div>
+	</div>
+</div>
+
+<div class='row'><div class='col-xs-12'><nav><ul class='pager'>
+
+#!
+if [[ $prev ]]; then
+#!
+
+    <li class='previous'><a href='$prev.html'><span aria-hidden='true'>&larr;</span></a></li>
+
+#!
+fi
+if [[ $next ]]; then
+#!
+
+    <li class='next'><a href='$next.html'><span aria-hidden='true'>&rarr;</span></a></li>
+
+#!
+fi
+#!
+
+</ul></nav></div></div>
+
+
+<div class='row'>
+	<div class='col-md-7'>
+<video poster='../$thumbdir/$filename.jpg' id='player' playsinline controls>
+    <source src='../$filename' type='video/mp4' />
+
+#!
+    base_filename=$(basename "$filename" .mp4)
+    if [[ -f "$base_filename.vtt" ]]; then
+        if [[ "$base_filename.vtt" == "$base_filename.vtt" ]]; then
+#!
+
+    <track kind="captions" label="$subtitle_language" src="../$base_filename.vtt" srclang="$subtitle_code" default />
+
+#!
+        fi
+    fi
+#!
+</video>
+
+<script src='$plyr_js'></script>
+<script>
+    const player = new Plyr('video', {captions: {active: true}});
+
+// Expose player so it can be used from the console
+window.player = player;
+</script>
+
+	</div>
+</div>
+<br>
+
+<div class='row'>
+	<div class='col-xs-12'>
+		<p><a class='btn btn-info btn-lg' href='../$filename'>$downloadicon Download the video file ($filesize)</a></p>
+	</div>
+</div>
+
+
+#!
+	if [[ $exifinfo ]]; then
+#!
+
+<br>
+<div class="row">
+<div class="col-xs-12">
+<pre class="text-muted" style="background-color:black">
+$exifinfo
+</pre>
+</div>
+</div>
+
+#!
+	fi
+#!
+
+</div>
+</body>
+</html>

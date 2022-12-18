@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# gallery.sh
+# video-gallery-generator.sh
 # Author: Rojen Zaman <rojen@riseup.net>
-#	 https://github.com/rojenzaman/video-gallery-generator_bash (video gallery generator)
-# Inspired by: Nils Knieling	
+#        https://github.com/rojenzaman/video-gallery-generator_bash (video gallery generator)
+# Inspired by: Nils Knieling
 #    https://github.com/Cyclenerd/gallery_shell (image gallery generator)
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,13 +20,215 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # RULES:
-# - The videos are must be MP4
-# - The subtitle files are must be VTT
-# - Subtitle file names are must be same name with their videos file.
-# - Videos must have a title and artist metadata in order to be displayed as a title on the html page.
-#   + If not they called by file names.
+# - Videos must be MP4.
+# - Subtitle files must be VTT.
+# - Subtitle filenames must be the same as video files.
+# - Videos must have a title and artist metadata to be displayed as a title in the html page if not called by their filename.
 
 
+#########################################################################################
+#### Function Section
+#########################################################################################
+generate_index_html() {
+echo "<!DOCTYPE HTML>
+<html lang='tr'>
+<head>
+	<meta charset='utf-8'>
+	<title>$title</title>
+	<meta name='viewport' content='width=device-width'>
+	<meta name='robots' content='noindex, nofollow'>
+	<meta name='generator' content='$0' />
+	<link rel='stylesheet' href='$stylesheet'>
+        <style>
+            body {
+            color: white;
+            background-color: black;
+            }
+        </style>
+</head>
+<body>
+<div class='container'>
+	<div class='row'>
+		<div class='col-xs-12'>
+			<div class='page-header'><h1>$title</h1></div>
+		</div>
+	</div>
+"
+if [[ $(find . -maxdepth 1 -type f -iname \*.mp4 | wc -l) -gt 0 ]]; then
+echo "
+<div class='row'>
+"
+    numfiles=0
+    for filename in *.[mM][pP][4]; do
+        filelist[$numfiles]=$filename
+        (( numfiles++ ))
+        if [[ ! -s $thumbdir/$filename ]]; then
+            debugOutput "$thumbdir/$filename"
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$filename")
+            ffmpeg -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
+        fi
+        get_title=$(exiftool -b -Title "$filename")
+        if [[ -z "$get_title" ]]; then
+            video_title="$filename"
+        else
+            video_title="$get_title"
+        fi
+echo "
+<div class='col-md-3 col-sm-12'>
+	<p>
+		$video_title
+		<a href='$thumbdir/$filename.html'><img src='$thumbdir/$filename.jpg' alt='' class='img-responsive'></a>
+		<div class='hidden-md hidden-lg'><hr></div>
+	</p>
+</div>
+"
+        if [[ $((numfiles % 4)) -eq 0 ]]; then
+echo "
+<div class='clearfix visible-md visible-lg'></div>
+"
+        fi
+    done
+echo "
+</div>
+"
+fi
+
+
+if [[ $(find . -maxdepth 1 -type f -iname \*.vtt | wc -l) -gt 0 ]]; then
+echo "
+    <div class='row'>
+		<div class='col-xs-12'>
+			<div class='page-header'><h3>VTT Files</h3></div>
+		</div>
+	</div>
+	<div class='row'>
+	<div class='col-xs-12'>"
+	for filename in *.[vV][tT][tT]; do
+echo "		<a href='$filename' class='btn btn-primary' role='button'>$downloadicon $filename</a>"
+	done
+echo "    </div>
+</div>"
+fi
+echo "<hr>
+<footer>
+	<p>$footer</p>
+	<p class='text-muted'>$datetime</p>
+</footer>
+</div> 
+</body>
+</html>"
+
+}
+generate_video_player() {
+echo "<!DOCTYPE HTML>
+<html lang='tr'>
+<head>
+<meta charset='utf-8'>
+<title>$video_title $video_artist</title>
+<meta name='viewport' content='width=device-width'>
+<meta name='robots' content='noindex, nofollow'>
+<meta name='generator' content='$0' />
+<link rel='stylesheet' href='$stylesheet'>
+<link rel='stylesheet' href='$plyr_css' />
+        <style>
+            body {
+            color: white;
+            background-color: black;
+            }
+			.pager li > a, .pager li > span {
+			display: inline-block;
+			padding: 5px 14px;
+			background-color: #000;
+			border: 2px solid #09ffff;
+			border-radius: 15px;
+			}
+			a {
+			color: #09ffff;
+			text-decoration: none;
+			}
+			.btn-info {
+			color: #000;
+			background-color: #5bc0de;
+			border-color: #46b8da;
+			}
+        </style>
+</head>
+<body>
+<div class='container'>
+<div class='row'>
+	<div class='col-xs-12'>
+		<div class='page-header'><h2><a href='../$htmlfile'>$homeicon</a> <span class='text-muted'>/</span> $video_title $video_artist</h2></div>
+	</div>
+</div>
+
+<div class='row'><div class='col-xs-12'><nav><ul class='pager'>
+"
+if [[ $prev ]]; then
+echo "
+    <li class='previous'><a href='$prev.html'><span aria-hidden='true'>&larr;</span></a></li>
+"
+fi
+if [[ $next ]]; then
+echo "
+    <li class='next'><a href='$next.html'><span aria-hidden='true'>&rarr;</span></a></li>
+"
+fi
+echo "
+</ul></nav></div></div>
+
+
+<div class='row'>
+	<div class='col-md-7'>
+<video poster='../$thumbdir/$filename.jpg' id='player' playsinline controls>
+    <source src='../$filename' type='video/mp4' />
+"
+    base_filename=$(basename "$filename" .mp4)
+    if [[ -f "$base_filename.vtt" ]]; then
+        if [[ "$base_filename.vtt" == "$base_filename.vtt" ]]; then
+echo "
+    <track kind="captions" label="$subtitle_language" src="../$base_filename.vtt" srclang="$subtitle_code" default />
+"
+        fi
+    fi
+echo "</video>
+
+<script src='$plyr_js'></script>
+<script>
+    const player = new Plyr('video', {captions: {active: true}});
+
+// Expose player so it can be used from the console
+window.player = player;
+</script>
+
+	</div>
+</div>
+<br>
+
+<div class='row'>
+	<div class='col-xs-12'>
+		<p><a class='btn btn-info btn-lg' href='../$filename'>$downloadicon Download the video file ($filesize)</a></p>
+	</div>
+</div>
+
+"
+	if [[ $exifinfo ]]; then
+echo "
+<br>
+<div class="row">
+<div class="col-xs-12">
+<pre class="text-muted" style="background-color:black">
+$exifinfo
+</pre>
+</div>
+</div>
+"
+	fi
+echo "
+</div>
+</body>
+</html>"
+
+}
 #########################################################################################
 #### Configuration Section
 #########################################################################################
@@ -45,8 +247,10 @@ exif="exiftool"
 
 # Bootstrap (currently v3.4.1)
 stylesheet="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"
-plyr_css="https://cdn.plyr.io/3.6.2/plyr.css"
-plyr_js="https://cdn.plyr.io/3.6.2/plyr.polyfilled.js"
+#plyr_css="https://cdn.plyr.io/3.6.2/plyr.css"
+plyr_css="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.css"
+#plyr_js="https://cdn.plyr.io/3.6.2/plyr.polyfilled.js"
+plyr_js="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.polyfilled.js"
 downloadicon='<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>'
 movieicon='<span class="glyphicon glyphicon-film" aria-hidden="true"></span>'
 homeicon='<span class="glyphicon glyphicon-home" aria-hidden="true"></span>'
@@ -54,7 +258,7 @@ homeicon='<span class="glyphicon glyphicon-home" aria-hidden="true"></span>'
 
 # Debugging output
 # true=enable, false=disable
-debug=true
+debug=false
 
 #########################################################################################
 #### End Configuration Section
@@ -120,64 +324,10 @@ command -v $exif >/dev/null 2>&1 || { echo >&2 "!!! $exif it's not installed.  A
 
 #### Create Startpage
 debugOutput "$htmlfile"
-cat > "$htmlfile" << EOF
-<!DOCTYPE HTML>
-<html lang="tr">
-<head>
-	<meta charset="utf-8">
-	<title>$title</title>
-	<meta name="viewport" content="width=device-width">
-	<meta name="robots" content="noindex, nofollow">
-	<meta name="generator" content="$0" />
-	<link rel="stylesheet" href="$stylesheet">
-        <style>
-            body {
-            color: white;
-            background-color: black;
-            }
-        </style>
-</head>
-<body>
-<div class="container">
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="page-header"><h1>$title</h1></div>
-		</div>
-	</div>
-EOF
 
-### Videos (MP4)
-if [[ $(find . -maxdepth 1 -type f -iname \*.mp4 | wc -l) -gt 0 ]]; then
 
-echo '<div class="row">' >> "$htmlfile"
-## Generate Images
-numfiles=0
-for filename in *.[mM][pP][4]; do
-	filelist[$numfiles]=$filename
-	(( numfiles++ ))
-		if [[ ! -s $thumbdir/$filename ]]; then
-			debugOutput "$thumbdir/$filename"
-			duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$filename")
-			ffmpeg -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
-		fi
-		get_title=$(exiftool -b -Title "$filename")
-		[[ -z "$get_title" ]] && {
-			video_title="$filename"
-		} || {
-			video_title="$get_title"
-		}
-	cat >> "$htmlfile" << EOF
-<div class="col-md-3 col-sm-12">
-	<p>
-		$video_title
-		<a href="$thumbdir/$filename.html"><img src="$thumbdir/$filename.jpg" alt="" class="img-responsive"></a>
-		<div class="hidden-md hidden-lg"><hr></div>
-	</p>
-</div>
-EOF
-[[ $((numfiles % 4)) -eq 0 ]] && echo '<div class="clearfix visible-md visible-lg"></div>' >> "$htmlfile"
-done
-echo '</div>' >> "$htmlfile"
+# generate index page
+generate_index_html > $htmlfile
 
 ## Generate the HTML Files for videos in thumbdir
 file=0
@@ -192,164 +342,23 @@ while [[ $file -lt $numfiles ]]; do
 	filesize=$(getFileSize "$filename")
 	debugOutput "$imagehtmlfile"
 	get_title=$(exiftool -b -Title "$filename")
-	[[ -z "$get_title" ]] && {
+	if [[ -z "$get_title" ]]; then
 		video_title="$filename"
-	} || {
+	else
 		video_title="$get_title"
-		}
+	fi
 	get_artist=$(exiftool -b -Artist "$filename")
-	[[ -z "$get_artist" ]] && {
+	if [[ -z "$get_artist" ]]; then
 		video_artist=""
-	} || {
+	else
 		video_artist="- $get_artist"
-	}
-
-print_vtt() {
-base_filename=$(basename "$filename" .mp4)
-[[ -f "$base_filename.vtt" ]] && {
-[[ "$base_filename.vtt" == "$base_filename.vtt" ]] 
-} && {
-cat <<EOF
-<track kind="captions" label="$subtitle_language" src="../$base_filename.vtt" srclang="$subtitle_code" default />
-EOF
-}
-}
-
-	cat > "$imagehtmlfile" << EOF
-<!DOCTYPE HTML>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<title>$video_title $video_artist</title>
-<meta name="viewport" content="width=device-width">
-<meta name="robots" content="noindex, nofollow">
-<meta name="generator" content="$0" />
-<link rel="stylesheet" href="$stylesheet">
-<link rel="stylesheet" href="$plyr_css" />
-        <style>
-            body {
-            color: white;
-            background-color: black;
-            }
-			.pager li > a, .pager li > span {
-			display: inline-block;
-			padding: 5px 14px;
-			background-color: #000;
-			border: 2px solid #09ffff;
-			border-radius: 15px;
-			}
-			a {
-			color: #09ffff;
-			text-decoration: none;
-			}
-			.btn-info {
-			color: #000;
-			background-color: #5bc0de;
-			border-color: #46b8da;
-			}
-        </style>
-</head>
-<body>
-<div class="container">
-<div class="row">
-	<div class="col-xs-12">
-		<div class="page-header"><h2><a href="../$htmlfile">$homeicon</a> <span class="text-muted">/</span> $video_title $video_artist</h2></div>
-	</div>
-</div>
-EOF
-
-	# Pager
-	echo '<div class="row"><div class="col-xs-12"><nav><ul class="pager">' >> "$imagehtmlfile"
-	[[ $prev ]] && echo '<li class="previous"><a href="'"$prev"'.html"><span aria-hidden="true">&larr;</span></a></li>' >> "$imagehtmlfile"
-	[[ $next ]] && echo '<li class="next"><a href="'"$next"'.html"><span aria-hidden="true">&rarr;</span></a></li>' >> "$imagehtmlfile"
-	echo '</ul></nav></div></div>' >> "$imagehtmlfile"
-
-	cat >> "$imagehtmlfile" << EOF
-<div class="row">
-	<div class="col-md-7">
-<video poster="../$thumbdir/$filename.jpg" id="player" playsinline controls>
-    <source src="../$filename" type="video/mp4" />
-	$(print_vtt)
-</video>
-
-<script src="$plyr_js"></script>
-<script>
-    const player = new Plyr('video', {captions: {active: true}});
-
-// Expose player so it can be used from the console
-window.player = player;
-</script>
-
-	</div>
-</div>
-<br>
-
-<div class="row">
-	<div class="col-xs-12">
-		<p><a class="btn btn-info btn-lg" href="../$filename">$downloadicon Download the video file ($filesize)</a></p>
-	</div>
-</div>
-EOF
-
-	# EXIF
-
-	if [[ $exifinfo ]]; then
-		cat >> "$imagehtmlfile" << EOF
-
-<br>
-<div class="row">
-<div class="col-xs-12">
-<pre class="text-muted" style="background-color:black">
-$exifinfo
-</pre>
-</div>
-</div>
-</div>
-
-EOF
 	fi
 
-	# Footer
-	cat >> "$imagehtmlfile" << EOF
-</div>
-</body>
-</html>
-EOF
+	# generate video page
+	generate_video_player > "$imagehtmlfile"
+
 	(( file++ ))
 done
 
-fi
-
-### Downloads (VTT)
-if [[ $(find . -maxdepth 1 -type f -iname \*.vtt | wc -l) -gt 0 ]]; then
-	cat >> "$htmlfile" << EOF
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="page-header"><h3>VTT Files</h3></div>
-		</div>
-	</div>
-	<div class="row">
-	<div class="col-xs-12">
-EOF
-	for filename in *.[vV][tT][tT]; do
-		#filesize=$(getFileSize "$filename")										#disable show file size
-		cat >> "$htmlfile" << EOF
-<a href="$filename" class="btn btn-primary" role="button">$downloadicon $filename</a>
-EOF
-	done
-	echo '</div></div>' >> "$htmlfile"
-fi
-
-### Footer
-cat >> "$htmlfile" << EOF
-<hr>
-<footer>
-	<p>$footer</p>
-	<p class="text-muted">$datetime</p>
-</footer>
-</div> <!-- // container -->
-</body>
-</html>
-EOF
 
 debugOutput "= okay :)"
