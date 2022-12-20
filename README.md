@@ -4,9 +4,16 @@ Demo web site available on https://rojenzaman.github.io/video-gallery/
 
 ### Usage
 
-Go to your video directory and run the script:
-
-    ./video-gallery-generator.sh -t <title> [-d <dir>]
+```
+Usage: video-gallery-generator.sh [-t <title>] [-d <thumbdir>] [-m] [-e] [-s] [-q] [-h]:
+    [-t <title>]     sets the title (default: Video Gallery)
+    [-d <thumbdir>]     sets the thumbdir (default: video)
+    [-m]         use tmpfs for html generation (default: /dev/shm/vgg-index.html)
+    [-e]         skip print exif data
+    [-s]         skip thumbnail generation
+    [-q]         skip author and title generation
+    [-h]         displays help (this message)
+```
 
 ### RULES
 
