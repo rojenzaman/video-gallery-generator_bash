@@ -23,9 +23,12 @@ video-gallery-generator.sh: /usr/local/bin/pp
 /usr/local/bin/pp:
 	bin/install-pp.sh $(pp_url) $(pp_tar)
 
+http:
+	python -m http.server $(TMP_PORT)
+
 test:
 	$(MAKE) clean
 	$(MAKE) example-video
 	$(MAKE) video-gallery-generator.sh
 	./video-gallery-generator.sh -t "Testing"
-	python -m http.server $(TMP_PORT)
+	$(MAKE) http
