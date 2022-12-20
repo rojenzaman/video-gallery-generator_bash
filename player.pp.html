@@ -35,7 +35,7 @@
 <div class='container'>
 <div class='row'>
 	<div class='col-xs-12'>
-		<div class='page-header'><h2><a href='../$htmlfile'>$homeicon</a> <span class='text-muted'>/</span> $video_title $video_artist</h2></div>
+		<div class='page-header'><h2><a href='../$_htmlfile'>$homeicon</a> <span class='text-muted'>/</span> $video_title $video_artist</h2></div>
 	</div>
 </div>
 
@@ -63,9 +63,18 @@ fi
 
 <div class='row'>
 	<div class='col-md-7'>
-<video poster='../$thumbdir/$filename.jpg' id='player' playsinline controls>
+#!
+if [[ $sflag == true ]]; then
+#!
+	<video id='player' playsinline controls>
+#!
+else
+#!
+	<video poster='../$thumbdir/$filename.jpg' id='player' playsinline controls>
+#!
+fi
+#!
     <source src='../$filename' type='video/mp4' />
-
 #!
     base_filename=$(basename "$filename" .mp4)
     if [[ -f "$base_filename.vtt" ]]; then
@@ -100,13 +109,13 @@ window.player = player;
 
 
 #!
-	if [[ $exifinfo ]]; then
+	if [[ ! $eflag == true ]]; then
 #!
 
 <br>
-<div class="row">
-<div class="col-xs-12">
-<pre class="text-muted" style="background-color:black">
+<div class='row'>
+<div class='col-xs-12'>
+<pre class='text-muted' style='background-color:black'>
 $exifinfo
 </pre>
 </div>
