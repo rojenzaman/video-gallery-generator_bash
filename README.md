@@ -2,17 +2,24 @@
 
 Demo web site available on https://rojenzaman.github.io/video-gallery/
 
+
+### Install
+
+```bash
+sudo wget -O /usr/bin/video-gallery-generator.sh https://raw.githubusercontent.com/rojenzaman/video-gallery-generator_bash/master/video-gallery-generator.sh
+```
+
 ### Usage
 
 ```
 Usage: video-gallery-generator.sh [-t <title>] [-d <thumbdir>] [-m] [-e] [-s] [-q] [-h]:
-    [-t <title>]     sets the title (default: Video Gallery)
-    [-d <thumbdir>]     sets the thumbdir (default: video)
-    [-m]         use tmpfs for html generation (default: /dev/shm/vgg-index.html)
-    [-e]         skip print exif data
-    [-s]         skip thumbnail generation
-    [-q]         skip author and title generation
-    [-h]         displays help (this message)
+    [-t <title>]	sets the title (default: Video Gallery)
+    [-d <thumbdir>]	sets the thumbdir (default: video)
+    [-m]		use tmpfs for html generation (default: /dev/shm/vgg-index.html)
+    [-e]		skip print exif data
+    [-s]		skip thumbnail generation
+    [-q]		skip author and title generation
+    [-h]		displays help (this message)
 ```
 
 ### RULES
