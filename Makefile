@@ -9,13 +9,10 @@ clean:
 
 example-video:
 	wget \
-	https://rojenzaman.github.io/video-gallery/file_example_MP4_480_1_5MG.mp4 \
-	https://rojenzaman.github.io/video-gallery/file_example_MP4_480_1_5MG.vtt \
-	https://rojenzaman.github.io/video-gallery/grb_2.mp4 \
-	https://rojenzaman.github.io/video-gallery/mov_bbb.mp4 \
-	https://rojenzaman.github.io/video-gallery/mov_bbb.vtt \
-	https://rojenzaman.github.io/video-gallery/sample_640x360.mp4 \
-	https://rojenzaman.github.io/video-gallery/small.mp4
+	https://static.fsf.org/nosvn/videos/escape-to-freedom/videos/escape-to-freedom-360p.mp4 \
+	https://static.fsf.org/nosvn/videos/escape-to-freedom/captions/escape-to-freedom_en.vtt \
+	https://static.fsf.org/nosvn/videos/fight-to-repair/videos/Fight-to-Repair-360p.mp4 \
+	https://static.fsf.org/nosvn/videos/fight-to-repair/captions/fight-to-repair_en.vtt
 
 video-gallery-generator.sh: opt/pp/pp
 	bin/preprocessor.sh video-gallery-generator.sh
