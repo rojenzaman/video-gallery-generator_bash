@@ -40,7 +40,7 @@ fi
             debugOutput "$thumbdir/$filename"
             if [[ ! $sflag == true ]]; then
                 duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$filename")
-                ffmpeg -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
+                ffmpeg -y -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
             fi
         fi
 	get_title=""
