@@ -8,28 +8,28 @@
 <meta name='generator' content='$0' />
 <link rel='stylesheet' href='$stylesheet'>
 <link rel='stylesheet' href='$plyr_css' />
-        <style>
-            body {
-            color: white;
-            background-color: black;
-            }
-			.pager li > a, .pager li > span {
-			display: inline-block;
-			padding: 5px 14px;
-			background-color: #000;
-			border: 2px solid #09ffff;
-			border-radius: 15px;
-			}
-			a {
-			color: #09ffff;
-			text-decoration: none;
-			}
-			.btn-info {
-			color: #000;
-			background-color: #5bc0de;
-			border-color: #46b8da;
-			}
-        </style>
+	<style>
+		body {
+		color: white;
+		background-color: black;
+		}
+		.pager li > a, .pager li > span {
+		display: inline-block;
+		padding: 5px 14px;
+		background-color: #000;
+		border: 2px solid #09ffff;
+		border-radius: 15px;
+		}
+		a {
+		color: #09ffff;
+		text-decoration: none;
+		}
+		.btn-info {
+		color: #000;
+		background-color: #5bc0de;
+		border-color: #46b8da;
+		}
+	</style>
 </head>
 <body>
 <div class='container'>
@@ -104,6 +104,13 @@ window.player = player;
 <div class='row'>
 	<div class='col-xs-12'>
 		<p><a class='btn btn-info btn-lg' href='../$filename'>$downloadicon Download the video file ($filesize)</a></p>
+#!
+	if [[ "$base_filename.vtt" == "$base_filename.vtt" ]]; then
+#!
+		<p><a class='btn btn-info btn-lg' href='../$base_filename.vtt'>$vttdownloadicon Download the subtitle</a></p>
+#!
+	fi
+#!
 	</div>
 </div>
 

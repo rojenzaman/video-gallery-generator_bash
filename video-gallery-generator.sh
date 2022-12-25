@@ -67,7 +67,7 @@ fi
             debugOutput "$thumbdir/$filename"
             if [[ ! $sflag == true ]]; then
                 duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$filename")
-                ffmpeg -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
+                ffmpeg -y -ss "$(echo $duration/2 | bc)" -i "$filename" -q:v 2 -vframes 1 "$thumbdir/$filename.jpg"
             fi
         fi
 	get_title=""
@@ -139,28 +139,28 @@ echo "<!DOCTYPE HTML>
 <meta name='generator' content='$0' />
 <link rel='stylesheet' href='$stylesheet'>
 <link rel='stylesheet' href='$plyr_css' />
-        <style>
-            body {
-            color: white;
-            background-color: black;
-            }
-			.pager li > a, .pager li > span {
-			display: inline-block;
-			padding: 5px 14px;
-			background-color: #000;
-			border: 2px solid #09ffff;
-			border-radius: 15px;
-			}
-			a {
-			color: #09ffff;
-			text-decoration: none;
-			}
-			.btn-info {
-			color: #000;
-			background-color: #5bc0de;
-			border-color: #46b8da;
-			}
-        </style>
+	<style>
+		body {
+		color: white;
+		background-color: black;
+		}
+		.pager li > a, .pager li > span {
+		display: inline-block;
+		padding: 5px 14px;
+		background-color: #000;
+		border: 2px solid #09ffff;
+		border-radius: 15px;
+		}
+		a {
+		color: #09ffff;
+		text-decoration: none;
+		}
+		.btn-info {
+		color: #000;
+		background-color: #5bc0de;
+		border-color: #46b8da;
+		}
+	</style>
 </head>
 <body>
 <div class='container'>
@@ -218,8 +218,11 @@ window.player = player;
 
 <div class='row'>
 	<div class='col-xs-12'>
-		<p><a class='btn btn-info btn-lg' href='../$filename'>$downloadicon Download the video file ($filesize)</a></p>
-	</div>
+		<p><a class='btn btn-info btn-lg' href='../$filename'>$downloadicon Download the video file ($filesize)</a></p>"
+	if [[ "$base_filename.vtt" == "$base_filename.vtt" ]]; then
+echo "		<p><a class='btn btn-info btn-lg' href='../$base_filename.vtt'>$vttdownloadicon Download the subtitle</a></p>"
+	fi
+echo "	</div>
 </div>
 
 "
@@ -262,6 +265,7 @@ stylesheet="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/b
 plyr_css="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.css"
 plyr_js="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.polyfilled.js"
 downloadicon='<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>'
+vttdownloadicon='<span class="glyphicon glyphicon-subtitles" aria-hidden="true"></span>'
 movieicon='<span class="glyphicon glyphicon-film" aria-hidden="true"></span>'
 homeicon='<span class="glyphicon glyphicon-home" aria-hidden="true"></span>'
 #homeicon=".."

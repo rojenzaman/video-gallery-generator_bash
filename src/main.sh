@@ -19,6 +19,7 @@ stylesheet="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/b
 plyr_css="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.css"
 plyr_js="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.7.3/plyr.polyfilled.js"
 downloadicon='<span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>'
+vttdownloadicon='<span class="glyphicon glyphicon-subtitles" aria-hidden="true"></span>'
 movieicon='<span class="glyphicon glyphicon-film" aria-hidden="true"></span>'
 homeicon='<span class="glyphicon glyphicon-home" aria-hidden="true"></span>'
 #homeicon=".."
