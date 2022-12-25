@@ -3,4 +3,4 @@
 video/
 index.html
 *.pp
-pp-tmp
+opt/

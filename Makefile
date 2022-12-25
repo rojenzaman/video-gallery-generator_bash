@@ -17,10 +17,10 @@ example-video:
 	https://rojenzaman.github.io/video-gallery/sample_640x360.mp4 \
 	https://rojenzaman.github.io/video-gallery/small.mp4
 
-video-gallery-generator.sh: /usr/local/bin/pp
+video-gallery-generator.sh: opt/pp/pp
 	bin/preprocessor.sh video-gallery-generator.sh
 
-/usr/local/bin/pp:
+opt/pp/pp:
 	bin/install-pp.sh $(pp_url) $(pp_tar)
 
 http:
